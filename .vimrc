@@ -1,0 +1,68 @@
+set nocompatible 
+filetype off 
+syntax on 
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'Raimondi/delimitMate'
+let delimitMate_expand_cr=1
+
+Plugin 'Valloric/YouCompleteMe'
+let g:ycm_autoclose_preview_window_after_completion = 1
+
+Plugin 'ternjs/tern_for_vim'
+
+Plugin 'wincent/command-t'
+" Open files with <leader>f
+map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
+" Open files, limited to the directory of the current file, with <leader>gf
+" This requires the %% mapping found below.
+map <leader>gf :CommandTFlush<cr>\|:CommandT %%<cr>
+
+Plugin 'mattn/emmet-vim'
+
+call vundle#end()
+
+set path+=**
+
+set wildmenu
+
+filetype plugin indent on 
+
+set hlsearch
+
+set nobackup
+
+set noswapfile
+
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+map <leader>e :edit %%
+
+set winwidth=84
+" We have to have a winheight bigger than we want to set winminheight. But if
+" we set winheight to be huge before winminheight, the winminheight set will
+" fail.
+set winheight=5
+set winminheight=5
+set winheight=999
+
+set number
+set showmatch
+set tabstop=2 
+set softtabstop=2
+set expandtab 
+set shiftwidth=2 
+set smarttab
+set autoindent
+set smartindent
+set lazyredraw
+set regexpengine=1
+set backspace=2 
+set colorcolumn=80
+
+autocmd Filetype java setlocal shiftwidth=4 tabstop=4
+
+let g:ruby_path = system('echo $HOME/.rbenv/shims')
