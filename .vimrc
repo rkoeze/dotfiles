@@ -26,7 +26,7 @@ map <leader>gf :CommandTFlush<cr>\|:CommandT %%<cr>
 Plugin 'mattn/emmet-vim'
 
 Plugin 'w0rp/ale'
-let g:ale_fixers = { 'javascript': ['eslintrc'] }
+map <leader>c :ALEToggle<CR>
 
 call vundle#end()
 
