@@ -1,4 +1,5 @@
-set nocompatible 
+set nocompatible
+set hidden
 filetype off 
 syntax on 
 
@@ -23,6 +24,9 @@ map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
 map <leader>gf :CommandTFlush<cr>\|:CommandT %%<cr>
 
 Plugin 'mattn/emmet-vim'
+
+Plugin 'w0rp/ale'
+let g:ale_fixers = { 'javascript': ['eslintrc'] }
 
 call vundle#end()
 
@@ -61,7 +65,27 @@ set smartindent
 set lazyredraw
 set regexpengine=1
 set backspace=2 
+
 set colorcolumn=80
+
+" Always show tab bar at the top
+set showtabline=2
+set winwidth=79
+
+" make searches case-sensitive only if they contain upper-case characters
+set ignorecase smartcase
+
+" use emacs-style tab completion when selecting files, etc
+set wildmode=longest,list
+
+" make tab completion for files/buffers act like bash
+set wildmenu
+let mapleader=","
+
+" If a file is changed outside of vim, automatically reload it without asking
+set autoread
+
+:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 autocmd Filetype java setlocal shiftwidth=4 tabstop=4
 
