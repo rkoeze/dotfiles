@@ -1,8 +1,3 @@
-set nocompatible
-set hidden
-filetype off 
-syntax on 
-
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -29,6 +24,14 @@ Plugin 'w0rp/ale'
 map <leader>c :ALEToggle<CR>
 
 call vundle#end()
+
+set nocompatible
+
+set hidden
+
+filetype off
+
+syntax on
 
 set path+=**
 
