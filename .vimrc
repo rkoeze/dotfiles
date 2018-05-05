@@ -93,4 +93,6 @@ set autoread
 
 autocmd Filetype java setlocal shiftwidth=4 tabstop=4
 
+set tags=tags
+
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
