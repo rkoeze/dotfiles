@@ -164,3 +164,5 @@ export PATH=$PATH:$JAVA_HOME/bin
 
 # set filepath for dotfiles bare repository
 alias gd='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+alias clipboard='xclip -sel clip'
