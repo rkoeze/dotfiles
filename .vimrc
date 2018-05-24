@@ -23,6 +23,8 @@ Plugin 'mattn/emmet-vim'
 Plugin 'w0rp/ale'
 map <leader>c :ALEToggle<CR>
 
+Plugin 'tpope/vim-unimpaired'
+
 call vundle#end()
 
 set nocompatible
@@ -89,7 +91,7 @@ set wildmenu
 " If a file is changed outside of vim, automatically reload it without asking
 set autoread
 
-:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 autocmd Filetype java setlocal shiftwidth=4 tabstop=4
 
