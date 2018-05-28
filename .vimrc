@@ -52,6 +52,8 @@ map <leader>e :edit %%
 
 map <leader>t :tabnew<cr>
 
+map <leader>o :Ex<cr>
+
 set winwidth=84
 " We have to have a winheight bigger than we want to set winminheight. But if
 " we set winheight to be huge before winminheight, the winminheight set will
