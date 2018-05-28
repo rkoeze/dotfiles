@@ -49,5 +49,8 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
+# Node
+node_modules
+
 # Vim
 tags
