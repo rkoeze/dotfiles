@@ -166,3 +166,11 @@ export PATH=$PATH:$JAVA_HOME/bin
 alias gd='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 alias clipboard='xclip -sel clip'
+
+source /home/rkoeze/Development/pathway/pathway.sh
+
+# added by Anaconda3 installer
+export PATH="/home/rkoeze/anaconda3/bin:$PATH"
+export CATALINA_HOME=/opt/apache-tomcat
+
+ECLIPSE_HOME="/home/rkoeze/opt/eclipse"
