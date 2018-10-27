@@ -25,6 +25,8 @@ map <leader>c :ALEToggle<CR>
 
 Plugin 'tpope/vim-unimpaired'
 
+Plugin 'vim-scripts/dbext.vim'
+
 call vundle#end()
 
 set nocompatible
