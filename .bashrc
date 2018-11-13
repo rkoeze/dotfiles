@@ -156,7 +156,7 @@ export EDITOR=vim
 alias nodejs=node
 
 # intellij
-alias javatime=/opt/idea-IC-181.4203.550/bin/idea.sh
+alias javatime=/opt/idea-IC-182.4892.20/bin/idea.sh
 
 # java home and path
 JAVA_HOME="/usr/lib/jvm/java-8-oracle"
@@ -174,3 +174,6 @@ export PATH="/home/rkoeze/anaconda3/bin:$PATH"
 export CATALINA_HOME=/opt/apache-tomcat
 
 ECLIPSE_HOME="/home/rkoeze/opt/eclipse"
+
+# allows debugging in intellij/tomcat on port 8000
+export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:8000"
