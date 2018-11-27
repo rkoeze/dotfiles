@@ -177,3 +177,6 @@ ECLIPSE_HOME="/home/rkoeze/opt/eclipse"
 
 # allows debugging in intellij/tomcat on port 8000
 export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:8000"
+
+# Postman
+alias postman=/opt/Postman/Postman
