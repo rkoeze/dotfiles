@@ -77,7 +77,7 @@ set lazyredraw
 set regexpengine=1
 set backspace=2 
 
-set colorcolumn=80
+" set colorcolumn=80
 
 " Always show tab bar at the top
 set showtabline=2
