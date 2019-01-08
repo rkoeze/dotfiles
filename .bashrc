@@ -176,7 +176,11 @@ export CATALINA_HOME=/opt/apache-tomcat
 ECLIPSE_HOME="/home/rkoeze/opt/eclipse"
 
 # allows debugging in intellij/tomcat on port 8000
-export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:8000"
+export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:8000;
+-Dorg.apache.catalina.session.StandardSession.ACTIVITY_CHECK=true;"
 
 # Postman
 alias postman=/opt/Postman/Postman
+
+# HW ec2 instance
+alias connectohw='sudo ssh -i /home/rkoeze/rkoeze.pem ubuntu@ec2-34-217-176-5.us-west-2.compute.amazonaws.com'
