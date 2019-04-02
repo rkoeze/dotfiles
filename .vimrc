@@ -9,8 +9,6 @@ let delimitMate_expand_cr=1
 Plugin 'Valloric/YouCompleteMe'
 let g:ycm_autoclose_preview_window_after_completion = 1
 
-Plugin 'ternjs/tern_for_vim'
-
 Plugin 'wincent/command-t'
 " Open files with <leader>f
 map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
