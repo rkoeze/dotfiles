@@ -185,6 +185,6 @@ alias postman=/opt/Postman/Postman
 # HW ec2 instance
 alias connectohw='sudo ssh -i /home/rkoeze/rkoeze.pem ubuntu@ec2-34-217-176-5.us-west-2.compute.amazonaws.com'
 
-resore dev_db='sudo ssh -i /home/rkoeze/rkoeze.pem ubuntu@ec2-34-217-176-5.us-west-2.compute.amazonaws.com "pg_dump -h 127.0.0.1 -U rkoeze hw" | psql -d  hw_test'
+alias restore_dev_db='sudo ssh -i /home/rkoeze/rkoeze.pem ubuntu@ec2-34-217-176-5.us-west-2.compute.amazonaws.com "pg_dump -h 127.0.0.1 -U rkoeze hw" | psql -d  hw_test'
 
 alias install_youcompleteme='/home/rkoeze/.vim/bundle/YouCompleteMe/install.py --clang-completer --ts-completer'
