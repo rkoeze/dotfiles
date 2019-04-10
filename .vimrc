@@ -17,9 +17,13 @@ map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
 map <leader>gf :CommandTFlush<cr>\|:CommandT %%<cr>
 
 Plugin 'mattn/emmet-vim'
+imap <leader>h <C-y>,
 
 Plugin 'w0rp/ale'
 map <leader>c :ALEToggle<CR>
+let g:ale_open_list = 1
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_text_changed = 'never'
 
 Plugin 'tpope/vim-unimpaired'
 
