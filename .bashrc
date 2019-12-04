@@ -183,8 +183,18 @@ export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=
 alias postman=/opt/Postman/Postman
 
 # HW ec2 instance
-alias connectohw='sudo ssh -i /home/rkoeze/rkoeze.pem ubuntu@ec2-34-217-176-5.us-west-2.compute.amazonaws.com'
+alias connectohw='sudo ssh -i /home/rkoeze/fix.pem ubuntu@ec2-34-220-170-107.us-west-2.compute.amazonaws.com'
+
+alias connectot='ssh rkoeze@116.203.105.232'
 
 alias restore_dev_db='sudo ssh -i /home/rkoeze/rkoeze.pem ubuntu@ec2-34-217-176-5.us-west-2.compute.amazonaws.com "pg_dump -h 127.0.0.1 -U rkoeze hw" | psql -d  hw_test'
 
 alias install_youcompleteme='/home/rkoeze/.vim/bundle/YouCompleteMe/install.py --clang-completer --ts-completer'
+
+export ANDROID_HOME=$HOME/../../opt/android-sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+export PATH="$(yarn global bin):$PATH"

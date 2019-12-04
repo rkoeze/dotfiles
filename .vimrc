@@ -29,6 +29,12 @@ Plugin 'tpope/vim-unimpaired'
 
 Plugin 'vim-scripts/dbext.vim'
 
+Plugin 'lervag/vimtex'
+let g:tex_flavor='latex'
+let g:vimtex_quickfix_mode=0
+set conceallevel=1
+let g:tex_conceal='abdmg'
+
 call vundle#end()
 
 set nocompatible
@@ -37,13 +43,13 @@ set hidden
 
 filetype off
 
-syntax on
-
 set path+=**
 
 set wildmenu
 
 filetype plugin indent on 
+
+syntax on
 
 set hlsearch
 
@@ -57,6 +63,8 @@ map <leader>e :edit %%
 map <leader>t :tabnew<cr>
 
 map <leader>o :Ex<cr>
+
+map <leader>n :nohlsearch<cr>
 
 set winwidth=84
 " We have to have a winheight bigger than we want to set winminheight. But if
