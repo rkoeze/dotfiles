@@ -3,5 +3,3 @@
 	name = rkoeze
 [push]
 	default = simple
-[credential]
-	helper = store
