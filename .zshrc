@@ -34,3 +34,4 @@ alias gstp='git stash pop'
 alias gstd='git stash drop'
 
 export EDITOR=vim
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
