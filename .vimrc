@@ -6,9 +6,6 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'Raimondi/delimitMate'
 let delimitMate_expand_cr=1
 
-Plugin 'Valloric/YouCompleteMe'
-let g:ycm_autoclose_preview_window_after_completion = 1
-
 Plugin 'wincent/command-t'
 " Open files with <leader>f
 map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
@@ -34,6 +31,8 @@ let g:tex_flavor='latex'
 let g:vimtex_quickfix_mode=0
 set conceallevel=1
 let g:tex_conceal='abdmg'
+
+Plugin 'ycm-core/YouCompleteMe'
 
 call vundle#end()
 
