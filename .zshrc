@@ -1,6 +1,6 @@
 # Set PATH, MANPATH, etc., for Homebrew.
 eval "$(/opt/homebrew/bin/brew shellenv)"
-alias cf='/usr/bin/git --git-dir=/Users/rkoeze/.cfg/ --work-tree=/Users/rkoeze'
+alias dot='/usr/bin/git --git-dir=/Users/rkoeze/.cfg/ --work-tree=/Users/rkoeze'
 
 # some more ls aliases
 alias ll='ls -alF'
@@ -35,3 +35,6 @@ alias gstd='git stash drop'
 
 export EDITOR=vim
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# rbenv
+eval "$(rbenv init - zsh)"

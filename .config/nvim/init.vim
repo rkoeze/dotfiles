@@ -1,40 +1,4 @@
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-Plugin 'VundleVim/Vundle.vim'
-
-Plugin 'Raimondi/delimitMate'
-let delimitMate_expand_cr=1
-
-Plugin 'wincent/command-t'
-" Open files with <leader>f
-map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
-" Open files, limited to the directory of the current file, with <leader>gf
-" This requires the %% mapping found below.
-map <leader>gf :CommandTFlush<cr>\|:CommandT %%<cr>
-
-Plugin 'mattn/emmet-vim'
-imap <leader>h <C-y>,
-
-Plugin 'w0rp/ale'
-map <leader>c :ALEToggle<CR>
-let g:ale_open_list = 1
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_text_changed = 'never'
-
-Plugin 'tpope/vim-unimpaired'
-
-Plugin 'vim-scripts/dbext.vim'
-
-Plugin 'lervag/vimtex'
-let g:tex_flavor='latex'
-let g:vimtex_quickfix_mode=0
-set conceallevel=1
-let g:tex_conceal='abdmg'
-
-Plugin 'ycm-core/YouCompleteMe'
-
-call vundle#end()
+lua require('plugins')
 
 set nocompatible
 
@@ -108,6 +72,8 @@ set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 autocmd Filetype java setlocal shiftwidth=4 tabstop=4
 
-set tags=tags
-
-let g:ruby_path = system('echo $HOME/.rbenv/shims')
+" Telescope
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
