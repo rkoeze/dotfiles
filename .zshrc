@@ -2,7 +2,12 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 alias dot='/usr/bin/git --git-dir=/Users/rkoeze/.cfg/ --work-tree=/Users/rkoeze'
 
-# some more ls aliases
+# we always want nvim
+alias vim=nvim
+alias vi=nvim
+alias view=nvim
+
+# some ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
