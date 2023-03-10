@@ -1,8 +1,6 @@
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
-  use 'w0rp/ale'
-
   use 'mattn/emmet-vim'
 
   use 'tpope/vim-unimpaired'
