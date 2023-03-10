@@ -49,4 +49,6 @@ return require('packer').startup(function(use)
   })
 
   use 'folke/tokyonight.nvim'
+
+  use 'dense-analysis/ale'
 end)
