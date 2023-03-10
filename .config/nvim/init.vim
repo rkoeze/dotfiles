@@ -79,5 +79,4 @@ nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " Tokyonight
-set background=dark
 colorscheme tokyonight

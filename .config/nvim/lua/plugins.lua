@@ -41,5 +41,14 @@ return require('packer').startup(function(use)
     }
   }
 
+  require("tokyonight").setup({
+    style = "night",
+    on_highlights = function(hl, c)
+      hl.TabLine = {
+        fg = '#c1c7e3',
+      }
+    end,
+  })
+
   use 'folke/tokyonight.nvim'
 end)
