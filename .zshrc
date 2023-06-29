@@ -37,9 +37,9 @@ alias gst='git stash'
 alias gstl='git stash list'
 alias gstp='git stash pop'
 alias gstd='git stash drop'
+alias gack='git log --pretty="%an <%ae>" | sort -u | fzf | xargs -I "{}" commit --no-edit --amend --trailer "Co-authored-by: {}"'
 
 export EDITOR=nvim
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
 # rbenv
 eval "$(rbenv init - zsh)"
@@ -71,3 +71,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 
 setopt PROMPT_SUBST
 export PROMPT='%n:%1~$vcs_info_msg_0_ %# '
+
+alias python='python3'
+
+autoload -U +X bashcompinit && bashcompinit

@@ -68,9 +68,13 @@ set wildmenu
 " If a file is changed outside of vim, automatically reload it without asking
 set autoread
 
+" Use new regular expression engine
+set re=0
+
 set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 autocmd Filetype java setlocal shiftwidth=4 tabstop=4
+autocmd FileType python setlocal noexpandtab shiftwidth=4 softtabstop=4
 
 " Telescope
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
