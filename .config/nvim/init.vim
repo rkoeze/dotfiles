@@ -84,8 +84,3 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " Tokyonight
 colorscheme tokyonight
-
-" Ale
-let g:ale_linters = {
-\ 'ruby': ['rubocop']
-\}
