@@ -1,6 +1,6 @@
 # Set PATH, MANPATH, etc., for Homebrew.
 eval "$(/opt/homebrew/bin/brew shellenv)"
-alias dot='/usr/bin/git --git-dir=/Users/rkoeze/.cfg/ --work-tree=/Users/rkoeze'
+alias dt='/usr/bin/git --git-dir=/Users/rkoeze/.cfg/ --work-tree=/Users/rkoeze'
 
 # we always want nvim
 alias vim=nvim
