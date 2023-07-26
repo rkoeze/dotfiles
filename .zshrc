@@ -1,6 +1,6 @@
 # Set PATH, MANPATH, etc., for Homebrew.
 eval "$(/opt/homebrew/bin/brew shellenv)"
-alias dt='/usr/bin/git --git-dir=/Users/rkoeze/.cfg/ --work-tree=/Users/rkoeze'
+alias dtcg='/usr/bin/git --git-dir=$HOME/.dtcg/ --work-tree=$HOME'
 
 # we always want nvim
 alias vim=nvim
@@ -41,9 +41,6 @@ alias gack='git log --pretty="%an <%ae>" | sort -u | fzf | xargs -I "{}" commit 
 
 export EDITOR=nvim
 
-# rbenv
-eval "$(rbenv init - zsh)"
-
 # binds all keys to the standard vi-like bindings.
 bindkey -e
 
@@ -71,7 +68,5 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 
 setopt PROMPT_SUBST
 export PROMPT='%n:%1~$vcs_info_msg_0_ %# '
-
-alias python='python3'
 
 autoload -U +X bashcompinit && bashcompinit

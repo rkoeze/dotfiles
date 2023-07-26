@@ -2,7 +2,7 @@
 
 install_homebrew() {
   if ! command -v brew > /dev/null; then
-    NONINTERACTIVE=1 /bin/bash -c "$(
+    /bin/bash -c "$(
       curl \
         --fail \
         --location \
@@ -13,13 +13,10 @@ install_homebrew() {
   fi
 }
 
+export -f install_homebrew
+
 install_applications() {
   brew install nvim fzf git tmux zsh awscli cmake jq 
 }
 
-main() {
-  install_homebrew
-  install_applications
-}
-
-main
+export -f install_applications
