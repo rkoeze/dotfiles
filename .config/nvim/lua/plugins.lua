@@ -39,6 +39,8 @@ return require('packer').startup(function(use)
     }
   }
 
+  use 'folke/tokyonight.nvim'
+
   require("tokyonight").setup({
     style = "night",
     on_highlights = function(hl, c)
@@ -47,8 +49,6 @@ return require('packer').startup(function(use)
       }
     end,
   })
-
-  use 'folke/tokyonight.nvim'
 
   use 'dense-analysis/ale'
 end)

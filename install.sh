@@ -16,7 +16,13 @@ install_homebrew() {
 export -f install_homebrew
 
 install_applications() {
-  brew install nvim fzf git tmux zsh awscli cmake jq 
+  brew install nvim fzf git tmux zsh awscli cmake jq gh
 }
 
 export -f install_applications
+
+auth_github() {
+  gh auth login
+}
+
+export -f auth_github
