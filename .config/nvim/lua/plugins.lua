@@ -51,4 +51,7 @@ return require('packer').startup(function(use)
   })
 
   use 'dense-analysis/ale'
+  vim.g.ale_linters = {
+    python = {"flake8"}
+  } 
 end)
