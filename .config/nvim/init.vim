@@ -74,7 +74,7 @@ set re=0
 set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 autocmd Filetype java setlocal shiftwidth=4 tabstop=4
-autocmd FileType python setlocal noexpandtab shiftwidth=4 softtabstop=4
+autocmd FileType python setlocal tabstop=8 shiftwidth=4 softtabstop=4 expandtab shiftround
 
 " Telescope
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
