@@ -30,7 +30,9 @@ require('lazy').setup({
 
   'folke/tokyonight.nvim',
 
-  'dense-analysis/ale'
+  'dense-analysis/ale',
+
+  'nvim-treesitter/nvim-treesitter'
 })
 
 local cmp = require'cmp'
@@ -72,26 +74,22 @@ vim.g.ale_linters = {
   python = {"flake8"}
 } 
 
+-- explicitly turn off compatability with good old vi
 vim.o.compatible=false
 
+-- allow unsaved work not displayed on screen
 vim.o.hidden=true
 
-vim.cmd('filetype off')
-
-vim.opt.path=vim.opt.path + "**"
-
-vim.cmd('set wildmenu')
-
-vim.cmd('filetype plugin indent on')
-
-vim.cmd('syntax on')
-
+-- causes all searches to be highlighted
 vim.cmd("set hlsearch")
 
+-- immediately delete backup file on succesful write
 vim.o.backup=false
 
+-- don't use swap files
 vim.o.noswapfile=false
 
+-- map %% to expland filepath (used 1 line below)
 vim.cmd("cnoremap %% <C-R>=expand('%:h').'/'<cr>")
 vim.api.nvim_set_keymap('n', '<leader>e', ':edit %%', {noremap=true, silent=true})
 
@@ -126,7 +124,6 @@ vim.o.colorcolumn=80
 
 -- Always show tab bar at the top
 vim.o.showtabline=2
-vim.o.winwidth=79
 
 -- make searches case-sensitive only if they contain upper-case characters
 vim.o.ignorecase=true
@@ -144,14 +141,12 @@ vim.o.autoread=true
 -- Use new regular expression engine
 vim.o.re=0
 
-vim.o.statusline = [[%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)]]
-
 vim.cmd[[autocmd Filetype java setlocal shiftwidth=4 tabstop=4]]
 vim.cmd[[autocmd FileType python setlocal tabstop=8 shiftwidth=4 softtabstop=4]]
 
 -- Telescope
 vim.api.nvim_set_keymap('n', '<leader>ff', '<cmd>Telescope find_files<cr>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>fg', '<cmd>Telescope life_grep<cr>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<leader>fg', '<cmd>Telescope live_grep<cr>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>fb', '<cmd>Telescope buffers<cr>', {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', {noremap = true, silent = true})
 
