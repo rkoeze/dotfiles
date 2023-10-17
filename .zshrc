@@ -1,6 +1,6 @@
 # Set PATH, MANPATH, etc., for Homebrew.
 eval "$(/opt/homebrew/bin/brew shellenv)"
-alias dtcg='/usr/bin/git --git-dir=$HOME/.dtcg/ --work-tree=$HOME'
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dtcg/ --work-tree=$HOME'
 
 # we always want nvim
 alias vim=nvim
@@ -70,3 +70,6 @@ setopt PROMPT_SUBST
 export PROMPT='%n:%1~$vcs_info_msg_0_ %# '
 
 autoload -U +X bashcompinit && bashcompinit
+
+export PATH=/opt/homebrew/opt/postgresql@15/bin:$PATH
+
