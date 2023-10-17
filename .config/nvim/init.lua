@@ -99,26 +99,23 @@ vim.api.nvim_set_keymap('n', '<leader>o', ':Ex<cr>', {noremap=true, silent=true}
 
 vim.api.nvim_set_keymap('n', '<leader>n', ':nohlsearch<cr>', {noremap=true, silent=true})
 
-vim.o.winwidth=84
--- We have to have a winheight bigger than we want to set winminheight. But if
--- we set winheight to be huge before winminheight, the winminheight set will
--- fail.
-vim.o.winheight=5
-vim.o.winminheight=5
-vim.o.winheight=999
-
+-- show line numbers
 vim.o.number=true
+-- when a bracket is inserted, briefly jump to the matching one.  T
 vim.o.showmatch=true
-vim.o.tabstop=2 
-vim.o.softtabstop=2
-vim.o.expandtab=true
-vim.o.shiftwidth=2 
-vim.o.smarttab=true
 vim.o.autoindent=true
 vim.o.smartindent=true
 vim.o.lazyredraw=true
 vim.o.regexpengine=1
 vim.o.backspace=2 
+
+-- tab stuff
+vim.o.tabstop=2 
+vim.o.softtabstop=2
+vim.o.expandtab=true
+vim.o.shiftwidth=2 
+vim.o.smarttab=true
+
 
 vim.o.colorcolumn=80
 
@@ -152,3 +149,8 @@ vim.api.nvim_set_keymap('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', {nore
 
 -- Tokyonight
 vim.cmd("colorscheme tokyonight")
+
+vim.keymap.set("n", "=", [[<cmd>vertical resize +5<cr>]]) -- make the window biger vertically
+vim.keymap.set("n", "-", [[<cmd>vertical resize -5<cr>]]) -- make the window smaller vertically
+vim.keymap.set("n", "+", [[<cmd>horizontal resize +2<cr>]]) -- make the window bigger horizontally by pressing shift and =
+vim.keymap.set("n", "_", [[<cmd>horizontal resize -2<cr>]]) -- make the window smaller horizontally by pressing shift and -
