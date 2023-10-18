@@ -14,6 +14,7 @@ alias l='ls -CF'
 
 # git aliases
 alias gcm='git commit --verbose'
+alias gss='git status'
 alias gco='git checkout'
 alias gack='git log --pretty="%an <%ae>" | sort -u | fzf | xargs -I "{}" commit --no-edit --amend --trailer "Co-authored-by: {}"'
 
