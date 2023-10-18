@@ -26,7 +26,9 @@ require('lazy').setup({
 
   'dense-analysis/ale',
 
-  'nvim-treesitter/nvim-treesitter'
+  'nvim-treesitter/nvim-treesitter',
+
+  'lervag/vimtex'
 })
 
 -- 'hrsh7th/nvim-cmp'
@@ -75,6 +77,10 @@ vim.cmd("colorscheme tokyonight")
 vim.g.ale_linters = {
   python = {"flake8"}
 } 
+
+-- 'lervag/vimtex'
+vim.g.vimtex_view_method = 'skim'
+vim.g.vimtex_compiler_method = 'text'
 
 -- explicitly turn off compatability with good old vi
 vim.o.compatible=false
