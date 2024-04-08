@@ -16,7 +16,7 @@ install_homebrew() {
 export -f install_homebrew
 
 install_applications() {
-  brew install nvim fzf git tmux zsh awscli cmake jq gh
+  brew install nvim fzf git tmux zsh awscli cmake jq gh rbenv ruby-build
 }
 
 export -f install_applications
