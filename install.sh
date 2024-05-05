@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+pull_down_dotfiles() {
+  alias dotfiles ='/usr/bin/git --git-dir=$HOME/.dtcg/ --work-tree=$HOME'
+  git clone --bare <git-repo-url> $HOME/.dtcg
+  dotfiles checkout
+  dotfiles config --local status.showUntrackedFiles no
+}
+
 install_homebrew() {
   if ! command -v brew > /dev/null; then
     /bin/bash -c "$(
