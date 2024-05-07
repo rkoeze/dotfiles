@@ -16,7 +16,12 @@ require('lazy').setup({
     'hrsh7th/nvim-cmp',
     dependencies = {'hrsh7th/cmp-buffer'}
   },
-
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function ()
+      require("copilot_cmp").setup()
+    end
+  },
   {
     'nvim-telescope/telescope.nvim', branch = '0.1.x',
     dependencies = {'nvim-lua/plenary.nvim'}
@@ -29,13 +34,13 @@ require('lazy').setup({
   'nvim-treesitter/nvim-treesitter',
 
   'lervag/vimtex',
-
-  'github/copilot.vim',
 })
 
 -- 'hrsh7th/nvim-cmp'
 local cmp = require'cmp'
 cmp.setup({
+  suggestion = { enabled = false },
+  panel = { enabled = false },
   mapping = cmp.mapping.preset.insert({
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -75,7 +80,8 @@ require("tokyonight").setup({
 vim.cmd("colorscheme tokyonight")
 -- 'dense-analysis/ale',
 vim.g.ale_linters = {
-  python = {"flake8"}
+  python = {"flake8"},
+  ruby = {"ruby"}
 } 
 
 -- 'lervag/vimtex'
