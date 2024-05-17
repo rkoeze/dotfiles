@@ -28,6 +28,10 @@ require('lazy').setup({
   'nvim-treesitter/nvim-treesitter',
 
   'lervag/vimtex',
+
+  'tpope/vim-rails',
+
+  'vim-ruby/vim-ruby'
 })
 
 -- 'hrsh7th/nvim-cmp'
@@ -70,11 +74,17 @@ require("tokyonight").setup({
 })
 
 vim.cmd("colorscheme tokyonight")
--- 'dense-analysis/ale',
+
+-- 'dense-analysis/ale'
+vim.g.ale_enabled = 1
+vim.g.ale_fix_on_save = 1
 vim.g.ale_linters = {
-  python = {"flake8"},
-  ruby = {"ruby"}
-} 
+  ruby = {'rubocop'},
+}
+vim.g.ale_fixers = {
+  ['*'] = {'remove_trailing_lines', 'trim_whitespace'}
+}
+vim.g.ale_ruby_rubocop_executable = 'bin/rubocop'
 
 -- 'lervag/vimtex'
 vim.g.vimtex_view_method = 'skim'
@@ -92,9 +102,6 @@ vim.cmd("set hlsearch")
 -- immediately delete backup file on succesful write
 vim.o.backup=false
 
--- don't use swap files
-vim.o.noswapfile=false
-
 -- map %% to expland filepath (used 1 line below)
 vim.cmd("cnoremap %% <C-R>=expand('%:h').'/'<cr>")
 vim.api.nvim_set_keymap('n', '<leader>e', ':edit %%', {noremap=true, silent=true})
@@ -111,7 +118,6 @@ vim.o.autoindent=true
 vim.o.smartindent=true
 vim.o.lazyredraw=true
 vim.o.regexpengine=1
-vim.o.backspace=2 
 
 -- tab stuff
 vim.o.tabstop=2 
