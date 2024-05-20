@@ -82,9 +82,9 @@ vim.g.ale_linters = {
   ruby = {'rubocop'},
 }
 vim.g.ale_fixers = {
-  ['*'] = {'remove_trailing_lines', 'trim_whitespace'}
+  ['*'] = {'rubocop', 'remove_trailing_lines', 'trim_whitespace'}
 }
-vim.g.ale_ruby_rubocop_executable = 'bin/rubocop'
+vim.g.ale_ruby_rubocop_executable = 'bundle'
 
 -- 'lervag/vimtex'
 vim.g.vimtex_view_method = 'skim'
