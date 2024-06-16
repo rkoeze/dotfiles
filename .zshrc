@@ -56,3 +56,5 @@ export NVM_DIR="$HOME/.nvm"
 
 # Load RBENV
 eval "$(rbenv init - zsh)"
+
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"

@@ -11,6 +11,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- optionally enable 24-bit colour
+vim.opt.termguicolors = true
+
 require('lazy').setup({
   {
     'hrsh7th/nvim-cmp',
@@ -31,7 +38,27 @@ require('lazy').setup({
 
   'tpope/vim-rails',
 
-  'vim-ruby/vim-ruby'
+  'vim-ruby/vim-ruby',
+
+  'nvim-tree/nvim-tree.lua',
+
+  'APZelos/blamer.nvim'
+})
+
+require("nvim-tree").setup({
+  sort = {
+    sorter = "case_sensitive",
+  },
+  view = {
+    width = 40,
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = false,
+    git_ignored = false,
+  },
 })
 
 -- 'hrsh7th/nvim-cmp'
@@ -106,7 +133,8 @@ vim.o.backup=false
 vim.cmd("cnoremap %% <C-R>=expand('%:h').'/'<cr>")
 vim.api.nvim_set_keymap('n', '<leader>e', ':edit %%', {noremap=true, silent=true})
 vim.api.nvim_set_keymap('n', '<leader>t', ':tabnew<cr>', {noremap=true, silent=true})
-vim.api.nvim_set_keymap('n', '<leader>o', ':Ex<cr>', {noremap=true, silent=true})
+vim.api.nvim_set_keymap('n', '<leader>o', ':NvimTreeToggle<cr>', {noremap=true, silent=true})
+vim.api.nvim_set_keymap('n', '<leader>q', ':NvimTreeCollapse<cr>', {noremap=true, silent=true})
 vim.api.nvim_set_keymap('n', '<leader>n', ':nohlsearch<cr>', {noremap=true, silent=true})
 
 -- show line numbers
@@ -120,10 +148,10 @@ vim.o.lazyredraw=true
 vim.o.regexpengine=1
 
 -- tab stuff
-vim.o.tabstop=2 
+vim.o.tabstop=2
 vim.o.softtabstop=2
 vim.o.expandtab=true
-vim.o.shiftwidth=2 
+vim.o.shiftwidth=2
 vim.o.smarttab=true
 
 -- Always show tab bar at the top
