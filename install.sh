@@ -23,14 +23,14 @@ install_homebrew() {
 export -f install_homebrew
 
 install_applications() {
-  brew install nvim fzf git tmux zsh awscli cmake jq gh rbenv ruby-build ripgrep
+  brew install nvim fzf git tmux zsh awscli cmake jq gh rbenv ruby-build ripgrep wget
 }
 
 export -f install_applications
 
 install_cask_applications() {
   brew install --cask mactex skim
-} 
+}
 
 export -f install_cask_applications
 
