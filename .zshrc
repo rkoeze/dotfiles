@@ -19,6 +19,8 @@ alias gco='git checkout'
 alias gack='git log --pretty="%an <%ae>" | sort -u | fzf | xargs -I "{}" commit --no-edit --amend --trailer "Co-authored-by: {}"'
 
 export EDITOR=nvim
+export THOR_DIFF="nvim -d"
+export THOR_MERGE="nvim -d"
 
 # binds all keys to the standard vi-like bindings.
 bindkey -e
@@ -58,3 +60,6 @@ export NVM_DIR="$HOME/.nvm"
 eval "$(rbenv init - zsh)"
 
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
+export THOR_DIFF="vimdiff"
+export THOR_MERGE="vimdiff"
