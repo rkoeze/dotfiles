@@ -23,7 +23,7 @@ install_homebrew() {
 export -f install_homebrew
 
 install_applications() {
-  brew install nvim fzf git tmux zsh awscli cmake jq gh rbenv ruby-build ripgrep wget
+  brew install nvim fzf git tmux zsh awscli cmake jq gh rbenv ruby-build ripgrep wget opentofu
 }
 
 export -f install_applications
