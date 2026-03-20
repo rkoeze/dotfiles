@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Engineering Task"
+  short_description: "Turn vague engineering work into plans"
+  default_prompt: "Use $plan-engineering-task to turn this engineering request into a clear execution plan."
