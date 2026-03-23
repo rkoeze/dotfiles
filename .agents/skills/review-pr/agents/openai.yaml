@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Review"
+  short_description: "Review PRs with categorized feedback"
+  default_prompt: "Use $review-pr to review this pull request and organize feedback into architectural concerns, blocking issues, nits, and risks."
