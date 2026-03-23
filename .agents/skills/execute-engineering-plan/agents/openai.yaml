@@ -1,0 +1,4 @@
+interface:
+  display_name: "Execute Engineering Plan"
+  short_description: "Execute an existing engineering plan"
+  default_prompt: "Use $execute-engineering-plan to carry out an implementation plan already defined for this repo."
