@@ -29,7 +29,7 @@ install_applications() {
 export -f install_applications
 
 install_cask_applications() {
-  brew install --cask mactex skim
+  brew install --cask codex
 }
 
 export -f install_cask_applications
