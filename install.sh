@@ -29,7 +29,7 @@ install_applications() {
 export -f install_applications
 
 install_cask_applications() {
-  brew install --cask codex
+  brew install --cask codex claude-code font-symbols-only-nerd-font
 }
 
 export -f install_cask_applications
