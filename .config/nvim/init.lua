@@ -24,7 +24,7 @@ require('lazy').setup({
     dependencies = {'hrsh7th/cmp-buffer'}
   },
   {
-    'nvim-telescope/telescope.nvim', branch = '0.1.x',
+    'nvim-telescope/telescope.nvim',
     dependencies = {'nvim-lua/plenary.nvim'}
   },
 
@@ -46,7 +46,10 @@ require('lazy').setup({
 
   {
   'zk-org/zk-nvim',
-  name = "zk"
+  name = "zk",
+  opts = {
+      picker = "telescope"
+    }
   },
   {
     'MeanderingProgrammer/render-markdown.nvim',
@@ -58,8 +61,6 @@ require('lazy').setup({
     }
   }
 })
-
-require("zk").setup()
 
 require("nvim-tree").setup({
   sort = {
