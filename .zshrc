@@ -63,9 +63,8 @@ export THOR_MERGE="vimdiff"
 
 export PATH="/opt/homebrew/opt/openjdk@22/bin:$PATH"
 
-alias zkln='zk edit --notebook-dir ~/notes -W ~/notes -i --exclude meetings --exclude journal ./'
-alias zklm='zk edit --notebook-dir ~/notes -W ~/notes/meetings -i ./'
-alias zkld='zk edit --notebook-dir ~/notes -W ~/notes/journal/daily -i ./'
+alias zkln='zk edit --notebook-dir ~/notes -W ~/notes -i ./'
+alias zkmr='zk edit -sc- --notebook-dir ~/notes -W ~/notes -i ./'
 
 eval "$(uv generate-shell-completion zsh)"
 eval "$(uvx --generate-shell-completion zsh)"
