@@ -63,11 +63,17 @@ export THOR_MERGE="vimdiff"
 
 export PATH="/opt/homebrew/opt/openjdk@22/bin:$PATH"
 
-alias zkln='zk edit --notebook-dir ~/notes -W ~/notes -i ./'
-alias zkmr='zk edit -sc- --notebook-dir ~/notes -W ~/notes -i ./'
+autoload -Uz compinit && compinit
+zkln() {
+  zk edit -sc- --notebook-dir ~/notes -W ~/notes -i "${1:-.}/"
+}
+compdef '_files -/' zkln
 
 eval "$(uv generate-shell-completion zsh)"
 eval "$(uvx --generate-shell-completion zsh)"
 
 alias python="uv run python"
 alias python3="uv run python"
+alias docker="podman"
+export DOCKER_HOST=unix:///var/folders/nr/p5tcl49j6094dldmqsm4dlrc0000gp/T/podman/podman-machine-default-api.sock
+export CONTAINERS_MACHINE_PROVIDER=applehv
