@@ -9,10 +9,22 @@ description: Review pull requests, branch diffs, or commit ranges and return str
 
 Review the proposed change with a code review mindset. Build enough context to judge correctness, design quality, operational impact, and test coverage, then return findings grouped into four categories: architectural concerns, blocking issues, nits, and risks.
 
+## Inputs
+
+If no argument is given, default to reviewing the current branch against `master` (fall back to `main` if `master` does not exist). Otherwise, use the argument the user provided.
+
+| Argument           | Meaning                              | How to fetch the diff                  |
+| ------------------ | ------------------------------------ | -------------------------------------- |
+| _(none)_           | Current branch vs `master`           | `git diff master...HEAD`               |
+| `123` or `#123`    | GitHub PR number                     | `gh pr view 123` and `gh pr diff 123`  |
+| `<branch>`         | Named branch vs `master`             | `git diff master...<branch>`           |
+| `<base>..<head>`   | Explicit commit or branch range      | `git diff <base>...<head>`             |
+
 ## Workflow
 
 1. Establish scope.
-- Identify the base and head revision, PR description, linked issue, and any stated rollout notes.
+- Resolve the input per the table above; the default is the current branch vs `master`.
+- Capture the PR description, linked issue, and any stated rollout notes if a PR is referenced.
 - Read changed tests, migrations, config, and interface boundaries first because they define the intended behavior and blast radius.
 
 2. Read the diff before drilling into files.
