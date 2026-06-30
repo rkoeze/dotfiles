@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#MISE description="Install Homebrew formula and cask packages"
 set -euo pipefail
 
 brew_formulae=(

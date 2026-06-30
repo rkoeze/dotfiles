@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Update Homebrew formula and cask packages"
+set -euo pipefail
+
+brew update
+brew upgrade --formula
+brew upgrade --cask

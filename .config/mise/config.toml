@@ -1,14 +1,2 @@
 [settings]
 experimental = true
-
-[tasks.install-dependencies]
-description = "Install Homebrew formula and cask packages"
-run = "~/.config/mise/scripts/bootstrap-packages.sh"
-
-[tasks.update-dependencies]
-description = "Update Homebrew formula and cask packages"
-run = "brew update && brew upgrade --formula && brew upgrade --cask"
-
-[tasks.github-auth]
-description = "Authenticate the GitHub CLI"
-run = "gh auth login"

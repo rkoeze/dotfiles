@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Authenticate the GitHub CLI"
+set -euo pipefail
+
+gh auth login
