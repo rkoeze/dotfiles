@@ -1,0 +1,35 @@
+[settings]
+experimental = true
+
+[bootstrap.packages]
+"brew-cask:claude-code" = "latest"
+"brew-cask:codex" = "latest"
+"brew:nvim" = "latest"
+"brew:fzf" = "latest"
+"brew:git" = "latest"
+"brew:tmux" = "latest"
+"brew:zsh" = "latest"
+"brew:awscli" = "latest"
+"brew:cmake" = "latest"
+"brew:jq" = "latest"
+"brew:gh" = "latest"
+"brew:rbenv" = "latest"
+"brew:ruby-build" = "latest"
+"brew:ripgrep" = "latest"
+"brew:wget" = "latest"
+"brew:opentofu" = "latest"
+"brew:openjdk@22" = "latest"
+"brew:uv" = "latest"
+
+
+[tasks.bootstrap]
+description = "Run idempotent bootstrap steps not supported by declarative packages"
+run = "brew list --cask font-symbols-only-nerd-font >/dev/null 2>&1 || brew install --cask font-symbols-only-nerd-font"
+
+[tasks.update-brew]
+description = "Update Homebrew formula and cask packages"
+run = "brew update && brew upgrade --formula && brew upgrade --cask"
+
+[tasks.github-auth]
+description = "Authenticate the GitHub CLI"
+run = "gh auth login"

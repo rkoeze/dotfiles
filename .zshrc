@@ -74,6 +74,5 @@ eval "$(uvx --generate-shell-completion zsh)"
 
 alias python="uv run python"
 alias python3="uv run python"
-alias docker="podman"
-export DOCKER_HOST=unix:///var/folders/nr/p5tcl49j6094dldmqsm4dlrc0000gp/T/podman/podman-machine-default-api.sock
-export CONTAINERS_MACHINE_PROVIDER=applehv
+
+eval "$(/Users/rkoeze/.local/bin/mise activate zsh)"
