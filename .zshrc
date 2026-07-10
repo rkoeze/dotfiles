@@ -69,10 +69,4 @@ zkln() {
 }
 compdef '_files -/' zkln
 
-eval "$(uv generate-shell-completion zsh)"
-eval "$(uvx --generate-shell-completion zsh)"
-
-alias python="uv run python"
-alias python3="uv run python"
-
-eval "$(/Users/rkoeze/.local/bin/mise activate zsh)"
+eval "$(/Users/robertkoeze/.local/bin/mise activate zsh)"
