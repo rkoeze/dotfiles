@@ -69,4 +69,4 @@ zkln() {
 }
 compdef '_files -/' zkln
 
-eval "$(/Users/robertkoeze/.local/bin/mise activate zsh)"
+eval "$(/Users/rkoeze/.local/bin/mise activate zsh)"
