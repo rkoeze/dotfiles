@@ -124,11 +124,43 @@ vim.g.ale_enabled = 1
 vim.g.ale_fix_on_save = 1
 vim.g.ale_linters = {
   ruby = {'rubocop'},
+  -- ALE has no default linter list for java, so it runs every one it finds an
+  -- executable for. That includes eclipselsp, which starts `java -jar ''` and
+  -- fails on every buffer because ~/eclipse.jdt.ls isn't installed.
+  java = {'javac'},
 }
 vim.g.ale_fixers = {
   ['*'] = {'rubocop', 'remove_trailing_lines', 'trim_whitespace'}
 }
 vim.g.ale_ruby_rubocop_executable = 'bundle'
+
+-- ALE's javac linter shells out to plain `javac` on a single file. Two things
+-- break that for Lombok projects on JDK 21+:
+--   1. javac no longer runs annotation processors discovered on the classpath
+--      unless -proc:full is passed, so @Getter/@Setter never generate methods.
+--   2. ALE passes -sourcepath src/main/java but not the module's target/classes,
+--      so referenced types get recompiled from source (Lombok-less) rather than
+--      read from the already-built class files.
+-- Without both, every Lombok-generated accessor reports "cannot find symbol".
+vim.g.ale_java_javac_options = '-proc:full'
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'java',
+  callback = function(args)
+    local name = vim.api.nvim_buf_get_name(args.buf)
+    local pom = vim.fs.find('pom.xml', { upward = true, path = vim.fs.dirname(name) })[1]
+    if not pom then return end
+
+    local root = vim.fs.dirname(pom)
+    local cp = { root .. '/target/classes' }
+
+    if name:match('/src/test/java/') then
+      table.insert(cp, root .. '/target/test-classes')
+    end
+
+    vim.b[args.buf].ale_java_javac_classpath = table.concat(cp, ':')
+  end,
+})
 
 -- 'lervag/vimtex'
 vim.g.vimtex_view_method = 'skim'

@@ -12,12 +12,10 @@ brew_formulae=(
   cmake
   jq
   gh
-  rbenv
-  ruby-build
   ripgrep
+  fd
   wget
   opentofu
-  openjdk@22
   uv
 )
 

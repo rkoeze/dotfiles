@@ -2,5 +2,6 @@
 experimental = true
 
 [tools]
-java = "21"
+java = "25"
 node = "22"
+npm = "latest"

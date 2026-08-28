@@ -61,8 +61,6 @@ export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/b
 export THOR_DIFF="vimdiff"
 export THOR_MERGE="vimdiff"
 
-export PATH="/opt/homebrew/opt/openjdk@22/bin:$PATH"
-
 autoload -Uz compinit && compinit
 zkln() {
   zk edit -sc- --notebook-dir ~/notes -W ~/notes -i "${1:-.}/"
