@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Install Pi plugins"
+set -euo pipefail
+
+pi_packages=(
+  "npm:@pi-plugins/usage"
+  "npm:pi-mcp-adapter"
+  "npm:pi-web-access"
+  "npm:pi-subagents"
+)
+
+for package in "${pi_packages[@]}"; do
+  mise exec -- pi install "$package"
+done
