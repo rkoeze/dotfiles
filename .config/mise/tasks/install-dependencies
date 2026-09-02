@@ -36,3 +36,6 @@ for cask in "${brew_casks[@]}"; do
     brew install --cask "$cask"
   fi
 done
+
+mise install npm:@earendil-works/pi-coding-agent
+mise run install-pi-plugins
