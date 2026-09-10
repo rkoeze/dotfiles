@@ -5,12 +5,12 @@ experimental = true
 java = "25"
 node = "22"
 npm = "latest"
-"npm:@earendil-works/pi-coding-agent" = "latest"
+"npm:@earendil-works/pi-coding-agent" = "0.85.1"
 
 [tasks.pi]
 description = "Run Pi"
 tools.node = "22"
-tools."npm:@earendil-works/pi-coding-agent" = "latest"
+tools."npm:@earendil-works/pi-coding-agent" = "0.85.1"
 dir = "{{cwd}}"
 raw = true
 raw_args = true
