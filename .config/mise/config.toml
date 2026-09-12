@@ -10,7 +10,6 @@ npm = "latest"
 [tasks.pi]
 description = "Run Pi"
 tools.node = "22"
-tools."npm:@earendil-works/pi-coding-agent" = "0.85.1"
 dir = "{{cwd}}"
 raw = true
 raw_args = true
