@@ -12,3 +12,15 @@ pi_packages=(
 for package in "${pi_packages[@]}"; do
   mise exec -- pi install "$package"
 done
+
+# Pin the npm dependency stack for @pi-plugins/usage. The current latest
+# release pulls an incompatible Effect beta and fails to load effect/ByteSize.
+if [[ -d "$HOME/.pi/agent/npm" ]]; then
+  (
+    cd "$HOME/.pi/agent/npm"
+    npm install --save-exact \
+      @pi-plugins/usage@0.3.0 \
+      effect@4.0.0-beta.100 \
+      @effect/platform-node-shared@4.0.0-beta.100
+  )
+fi
