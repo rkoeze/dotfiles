@@ -1,3 +1,4 @@
 .dtcg
 .config/gh
+.zshrc.local
 .config/nvim/lazy-lock.json

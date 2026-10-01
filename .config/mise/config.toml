@@ -5,7 +5,8 @@ experimental = true
 java = "25"
 node = "22"
 npm = "latest"
-"npm:@earendil-works/pi-coding-agent" = "0.85.1"
+"npm:@earendil-works/pi-coding-agent" = "latest"
+uv = "0.11.28"
 
 [tasks.pi]
 description = "Run Pi"

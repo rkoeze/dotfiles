@@ -1,12 +1,12 @@
 {
   "packages": [
-    "npm:@pi-plugins/usage@0.3.0",
     "npm:pi-mcp-adapter@2.33.0",
     "npm:pi-web-access@0.29.0",
-    "npm:pi-subagents@0.67.0"
+    "npm:pi-subagents@0.67.0",
+    "npm:@pi-plugins/usage@0.7.1"
   ],
-  "lastChangelogVersion": "0.85.1",
+  "lastChangelogVersion": "0.87.1",
   "theme": "dark",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-terra"
+  "defaultModel": "gpt-6-sol"
 }
