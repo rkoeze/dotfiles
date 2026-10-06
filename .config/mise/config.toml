@@ -1,12 +1,16 @@
 [settings]
 experimental = true
+minimum_release_age = "0s"
 
 [tools]
 java = "25"
 node = "22"
-npm = "latest"
+pnpm = "latest"
 "npm:@earendil-works/pi-coding-agent" = "latest"
 uv = "0.11.28"
+
+[settings.npm]
+package_manager = "pnpm"
 
 [tasks.pi]
 description = "Run Pi"
