@@ -1,0 +1,19 @@
+# Illustrative validation branch. Do not copy it unless the code implements it.
+direction: down
+
+request: "Receive input"
+valid: "Input valid?" {
+  shape: diamond
+}
+reject: "Return validation error\nDo not persist"
+save: "Save record"
+result: "Return result"
+
+# E01
+request -> valid: "validate"
+# E02
+valid -> reject: "no"
+# E03
+valid -> save: "yes"
+# E04
+save -> result: "save returns"

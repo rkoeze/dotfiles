@@ -1,0 +1,19 @@
+# Illustrative syntax pattern, not a discovered repository architecture.
+# Replace every component and claim after inspecting the target repository.
+direction: right
+
+caller: "Caller"
+application: "Application (logical grouping)" {
+  handler: "Request handler\nValidates input"
+  operation: "Domain operation\nBuilds a record"
+}
+store: "Record store" {
+  shape: cylinder
+}
+
+# E01
+caller -> application.handler: "submits input"
+# E02
+application.handler -> application.operation: "passes valid input"
+# E03
+application.operation -> store: "writes record"

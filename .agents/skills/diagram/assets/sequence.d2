@@ -1,0 +1,18 @@
+# Illustrative synchronous success path. Adapt to the actual implementation.
+# A returned save call is not automatically a transaction-commit guarantee.
+shape: sequence_diagram
+
+caller: "Caller"
+handler: "Handler"
+store: "Store"
+
+# E01
+caller -> handler: "1. submit(input)"
+# E02
+handler -> handler: "2. validate input"
+# E03
+handler -> store: "3. save record"
+# E04
+store -> handler: "4. save returns"
+# E05
+handler -> caller: "5. return result"
