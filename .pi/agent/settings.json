@@ -4,7 +4,7 @@
     "npm:pi-subagents@0.76.0",
     "npm:@pi-plugins/usage@0.7.1"
   ],
-  "lastChangelogVersion": "1.0.2",
+  "lastChangelogVersion": "1.0.4",
   "theme": "dark",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6-sol"

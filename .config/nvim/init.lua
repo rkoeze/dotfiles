@@ -32,7 +32,12 @@ require('lazy').setup({
 
   'dense-analysis/ale',
 
-  'nvim-treesitter/nvim-treesitter',
+  {
+    'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    lazy = false,
+    build = ':TSUpdate',
+  },
 
   'lervag/vimtex',
 
