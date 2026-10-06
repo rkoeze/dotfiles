@@ -67,7 +67,7 @@ zkln() {
 }
 compdef '_files -/' zkln
 
-eval "$(/Users/rkoeze/.local/bin/mise activate zsh)"
-
 # Load machine-specific settings when present.
 [[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+# Examples of what will need to be moved to .zshrc.local
+# eval "$(/Users/rkoeze/.local/bin/mise activate zsh)"
