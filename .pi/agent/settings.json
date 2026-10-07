@@ -7,5 +7,6 @@
   "lastChangelogVersion": "1.0.4",
   "theme": "dark",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6-sol"
+  "defaultModel": "gpt-6-sol",
+  "defaultThinkingLevel": "high"
 }
