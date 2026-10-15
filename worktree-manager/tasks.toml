@@ -1,0 +1,25 @@
+# Included by ~/.config/mise/config.toml. All workspace behavior lives in worktrees.sh.
+["wt:create"]
+description = "Create a task workspace with selected Git worktrees"
+raw = true
+run = 'exec bash "$HOME/worktree-manager/worktrees.sh" create'
+
+["wt:add"]
+description = "Add repository worktrees to a task workspace"
+raw = true
+run = 'exec bash "$HOME/worktree-manager/worktrees.sh" add'
+
+["wt:list"]
+description = "List task workspaces and repositories"
+raw = true
+run = 'exec bash "$HOME/worktree-manager/worktrees.sh" list'
+
+["wt:status"]
+description = "Show branches and changes in a task workspace"
+raw = true
+run = 'exec bash "$HOME/worktree-manager/worktrees.sh" status'
+
+["wt:remove"]
+description = "Safely remove task worktrees, preserving branches"
+raw = true
+run = 'exec bash "$HOME/worktree-manager/worktrees.sh" remove'

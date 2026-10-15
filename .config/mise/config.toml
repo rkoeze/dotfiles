@@ -2,6 +2,9 @@
 experimental = true
 minimum_release_age = "0s"
 
+[task_config]
+includes = ["~/.config/mise/tasks", "~/worktree-manager/tasks.toml"]
+
 [tools]
 java = "25"
 node = "22"
