@@ -1,25 +1,25 @@
-# Included by ~/.config/mise/config.toml. All workspace behavior lives in worktrees.sh.
+# Included by ~/.config/mise/config.toml. All workspace behavior lives in worktrees.py.
 ["wt:create"]
 description = "Create a task workspace with selected Git worktrees"
 raw = true
-run = 'exec bash "$HOME/worktree-manager/worktrees.sh" create'
+run = 'exec python3 "$HOME/worktree-manager/worktrees.py" create'
 
 ["wt:add"]
 description = "Add repository worktrees to a task workspace"
 raw = true
-run = 'exec bash "$HOME/worktree-manager/worktrees.sh" add'
+run = 'exec python3 "$HOME/worktree-manager/worktrees.py" add'
 
 ["wt:list"]
 description = "List task workspaces and repositories"
 raw = true
-run = 'exec bash "$HOME/worktree-manager/worktrees.sh" list'
+run = 'exec python3 "$HOME/worktree-manager/worktrees.py" list'
 
 ["wt:status"]
 description = "Show branches and changes in a task workspace"
 raw = true
-run = 'exec bash "$HOME/worktree-manager/worktrees.sh" status'
+run = 'exec python3 "$HOME/worktree-manager/worktrees.py" status'
 
 ["wt:remove"]
 description = "Safely remove task worktrees, preserving branches"
 raw = true
-run = 'exec bash "$HOME/worktree-manager/worktrees.sh" remove'
+run = 'exec python3 "$HOME/worktree-manager/worktrees.py" remove'

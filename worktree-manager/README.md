@@ -1,7 +1,8 @@
 # Task workspaces with Git worktrees
 
-Global Mise tasks create multi-repository workspaces using only Bash and Git.
-They are available from any directory; no additional worktree manager is needed.
+Global Mise tasks create multi-repository workspaces using Python 3.9+ and native
+Git. Only Python's standard library is used: no pip packages, virtual environment,
+or additional worktree manager is needed. Tasks are available from any directory.
 
 ## Quick start
 
@@ -139,14 +140,17 @@ All manager files live together:
 
 ```text
 ~/worktree-manager/
-├── worktrees.sh
+├── worktrees.py
 ├── tasks.toml
 ├── README.md
 └── tests/
-    └── worktrees.sh
+    └── test_worktrees.py
 ```
 
-`worktrees.sh` handles command dispatch, selection, and Git operations.
+`worktrees.py` handles command dispatch with `argparse`, filesystem paths with
+`pathlib`, and native Git commands with `subprocess` (no shell interpolation).
+The existing `.wt-workspace` marker format is unchanged, so workspaces created
+by the earlier Bash implementation remain usable without migration.
 `tasks.toml` defines the five `wt:*` commands and delegates to that script.
 There are no separate launcher scripts under Mise's task directory.
 
@@ -162,23 +166,24 @@ replace Mise's default task-directory search list; add any other task directorie
 there if you use them later. Keep unrelated existing Mise configuration unchanged.
 
 Track `~/worktree-manager/` and `~/.config/mise/config.toml` in your dotfiles.
-The script is compatible with macOS Bash 3.2; tasks use raw terminal I/O so
-numbered selection also works through Mise. No tool installations are required.
-For direct use without Mise:
+Tasks invoke `python3` from your PATH and use raw terminal I/O so numbered
+selection also works through Mise. Python 3.9+ and Git must be installed; there
+are no third-party Python dependencies. For direct use without Mise:
 
 ```bash
-bash ~/worktree-manager/worktrees.sh create add-sso dlx-server dlx-ui
+python3 ~/worktree-manager/worktrees.py create add-sso dlx-server dlx-ui
 ```
 
 Run the tests with:
 
 ```bash
-/bin/bash ~/worktree-manager/tests/worktrees.sh
+python3 -B -m unittest discover -s ~/worktree-manager/tests -v
 ```
 
-Tests use fresh temporary repositories, exercise real Mise tasks when available,
-and leave fixtures under the printed temporary path for inspection. They do not
-modify your development repositories. Coverage includes menus and explicit
+Tests use standard-library `unittest` and fresh `TemporaryDirectory` repositories,
+automatically clean up only those disposable fixtures, and exercise real Mise
+tasks when available. They do not modify your development repositories.
+Coverage includes menus and explicit
 selection, overlapping tasks, adding, listing, status, main/master/custom defaults,
 remote-default discovery, branch reuse/conflicts, `.git` files, paths with spaces,
 partial failures, invalid inputs, destination protection, and safe removal.
