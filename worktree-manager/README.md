@@ -27,15 +27,15 @@ The example creates:
 ```text
 ~/Development/tasks/add-sso/
 ├── .wt-workspace          # Management marker; leave this file in place
-├── dlx-server/            # Real Git worktree, branch task/add-sso
-├── dlx-ui/                # Real Git worktree, branch task/add-sso
-├── dl-auth-client/        # Real Git worktree, branch task/add-sso
-└── apphub/                # Real Git worktree, branch task/add-sso
+├── dlx-server/            # Real Git worktree, branch add-sso
+├── dlx-ui/                # Real Git worktree, branch add-sso
+├── dl-auth-client/        # Real Git worktree, branch add-sso
+└── apphub/                # Real Git worktree, branch add-sso
 ```
 
 Open `~/Development/tasks/add-sso` in your editor or coding agent. Work only
 inside its repository subdirectories. Another task can include the same
-repositories on its own `task/<name>` branches. Worktrees share Git objects and
+repositories on its own `<name>` branches. Worktrees share Git objects and
 refs, but have independent working files, indexes, and checked-out branches.
 
 Discovery lists Git repositories that are **direct children** of the repository
@@ -73,12 +73,17 @@ WT_TASKS_ROOT = "{{env.HOME}}/code/tasks"
 ```
 
 Task names must start with an ASCII letter or digit and otherwise contain only
-letters, digits, `.`, `_`, or `-`. They must also be valid Git branch suffixes:
-no slashes, `..`, trailing dots, or `.lock` suffixes. Example: `AD1-1234-add-sso`.
+letters, digits, `.`, `_`, or `-`. They must also be valid Git branch names:
+no slashes, `..`, trailing dots, `.lock` suffixes, or the reserved name `HEAD`.
+Example: `AD1-1234-add-sso`.
 
 ## Branch behavior
 
-- Each repository uses `task/<task-name>`. Existing branches are reused.
+- Each new worktree uses the workspace folder name exactly as its branch name:
+  `wt:create add-sso` uses branch `add-sso`, with no prefix. Existing branches
+  with that exact name are reused.
+- Existing worktrees on older `task/<name>` branches are not renamed or switched.
+  Additional repositories added to those workspaces use the new unprefixed name.
 - Existing workspace members are skipped, never reset or switched. If you have
   manually changed a member's branch, `wt:status` shows its actual branch.
 - A branch checked out elsewhere is reported with that worktree's path; the

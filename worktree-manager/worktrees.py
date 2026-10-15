@@ -303,7 +303,7 @@ def main(argv=None):
             return list_workspaces(tasks_root)
         if (not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", args.task)
                 or git(repo_root if repo_root.is_dir() else Path.cwd(), "check-ref-format",
-                       f"refs/heads/task/{args.task}", check=False).returncode):
+                       "--branch", args.task, check=False).returncode):
             raise WorkspaceError(f"Unsafe task name: {args.task} (use a single letter/digit/dot/underscore/hyphen name valid as a Git branch).")
         workspace = tasks_root / args.task
         if args.command != "create" or exists(workspace):
@@ -317,7 +317,7 @@ def main(argv=None):
                 workspace.mkdir()
                 with (workspace / MARKER).open("x", encoding="utf-8") as stream:
                     stream.write(VERSION + "\n")
-            return create_members(workspace, repo_root, selected, f"task/{args.task}")
+            return create_members(workspace, repo_root, selected, args.task)
         if args.command == "status":
             return status(workspace)
         return remove(workspace)

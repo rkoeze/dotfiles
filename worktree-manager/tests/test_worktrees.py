@@ -65,7 +65,7 @@ class WorktreeTests(unittest.TestCase):
     def assert_worktree(self, task, name, branch=None):
         path = self.tasks / task / name
         self.assertTrue((path / ".git").is_file())
-        self.assertEqual(self.git(path, "branch", "--show-current"), branch or f"task/{task}")
+        self.assertEqual(self.git(path, "branch", "--show-current"), branch or task)
         return path
 
     def test_creation_overlap_add_list_status_and_original_checkout(self):
@@ -91,7 +91,7 @@ class WorktreeTests(unittest.TestCase):
         listing = self.wt("list").stdout
         for name in ("first", "second", "api", "auth", "front end"):
             self.assertIn(name, listing)
-        self.assertIn("task/first", self.wt("status", "first").stdout)
+        self.assertIn("## first", self.wt("status", "first").stdout)
         self.assertEqual(self.git(api, "branch", "--show-current"), "original")
         self.assertEqual(self.git(api, "status", "--porcelain"), before)
 
@@ -111,7 +111,7 @@ class WorktreeTests(unittest.TestCase):
             with self.subTest(selection=selection):
                 self.wt("create", "invalid-menu", input=selection, ok=False)
                 self.assertFalse((self.tasks / "invalid-menu").exists())
-        for task in ("../escape", "/absolute", "-option", "has space", "a..b", "a.lock", "a/child", "a."):
+        for task in ("../escape", "/absolute", "-option", "has space", "a..b", "a.lock", "a/child", "a.", "HEAD"):
             with self.subTest(task=task):
                 self.wt("create", task, "api", ok=False)
         self.wt("create", "unknown", "api", "missing", ok=False)
@@ -160,8 +160,8 @@ class WorktreeTests(unittest.TestCase):
         self.assertIn("Cannot determine default branch", result.stderr)
         self.wt("remove", "empty")
         self.assertFalse((self.tasks / "empty").exists())
-        self.git(odd, "branch", "task/reuse")
-        self.assertIn("reused task/reuse", self.wt("create", "reuse", "odd").stdout)
+        self.git(odd, "branch", "reuse")
+        self.assertIn("reused reuse", self.wt("create", "reuse", "odd").stdout)
 
     def test_recorded_but_missing_remote_default_does_not_fall_back(self):
         api = self.repos / "api"
@@ -183,7 +183,7 @@ class WorktreeTests(unittest.TestCase):
     def test_conflict_partial_success_and_retry(self):
         api = self.repos / "api"
         outside = self.root / "outside"
-        self.git(api, "worktree", "add", "-qb", "task/conflict", outside)
+        self.git(api, "worktree", "add", "-qb", "conflict", outside)
         result = self.wt("create", "conflict", "auth", "api", ok=False)
         self.assertIn(str(outside), result.stderr)
         self.assertIn("successful worktrees and branches were kept", result.stderr)
@@ -191,17 +191,17 @@ class WorktreeTests(unittest.TestCase):
         self.assertFalse((self.tasks / "conflict/api").exists())
         self.git(api, "worktree", "remove", outside)
         result = self.wt("add", "conflict", "api")
-        self.assertIn("reused task/conflict", result.stdout)
+        self.assertIn("reused conflict", result.stdout)
         self.assert_worktree("conflict", "api")
 
     def test_native_add_failure_does_not_prevent_other_repositories(self):
-        # A prefix ref prevents Git from creating task/native in this repository.
-        self.git(self.repos / "api", "branch", "task")
+        # A child ref prevents Git from creating the branch native in this repository.
+        self.git(self.repos / "api", "branch", "native/child")
         result = self.wt("create", "native", "api", "auth", ok=False)
         self.assertIn("FAIL api", result.stderr)
         self.assertIn("OK auth", result.stdout)
         self.assert_worktree("native", "auth")
-        self.git(self.repos / "api", "show-ref", "--verify", "refs/heads/task")
+        self.git(self.repos / "api", "show-ref", "--verify", "refs/heads/native/child")
         self.assertTrue((self.tasks / "native" / manager.MARKER).is_file())
 
     def test_removal_preflight_protects_every_worktree_and_every_change_type(self):
@@ -216,7 +216,7 @@ class WorktreeTests(unittest.TestCase):
                         self.git(auth, "add", "tracked")
                 else:
                     (auth / ("local.secret" if kind == "ignored" else "untracked")).write_text("valuable\n")
-                self.assertIn("task/dirty", self.wt("status", "dirty").stdout)
+                self.assertIn("## dirty", self.wt("status", "dirty").stdout)
                 result = self.wt("remove", "dirty", ok=False)
                 self.assertIn("UNSAFE auth", result.stderr)
                 self.assertIn("Nothing removed", result.stderr)
@@ -229,7 +229,7 @@ class WorktreeTests(unittest.TestCase):
         self.wt("remove", "dirty")
         self.assertFalse((self.tasks / "dirty").exists())
         for repo in ("api", "auth"):
-            self.git(self.repos / repo, "show-ref", "--verify", "refs/heads/task/dirty")
+            self.git(self.repos / repo, "show-ref", "--verify", "refs/heads/dirty")
         self.wt("remove", "dirty", ok=False)
 
     def test_locked_and_unrecognized_entries_block_entire_removal(self):
@@ -248,8 +248,8 @@ class WorktreeTests(unittest.TestCase):
         self.wt("remove", "safe")
 
     def test_branch_commits_survive_removal_and_recreation(self):
-        self.git(self.repos / "auth", "branch", "task/reuse", "master")
-        self.assertIn("reused task/reuse", self.wt("create", "reuse", "auth").stdout)
+        self.git(self.repos / "auth", "branch", "reuse", "master")
+        self.assertIn("reused reuse", self.wt("create", "reuse", "auth").stdout)
         path = self.tasks / "reuse/auth"
         (path / "tracked").write_text("task commit\n")
         self.git(path, "commit", "-qam", "task work")
@@ -285,6 +285,25 @@ class WorktreeTests(unittest.TestCase):
                     destination.rmdir()
                 else:
                     destination.unlink()
+
+    def test_existing_prefixed_worktrees_are_not_renamed(self):
+        workspace = self.tasks / "legacy"
+        workspace.mkdir(parents=True)
+        (workspace / manager.MARKER).write_text(manager.VERSION + "\n")
+        self.git(self.repos / "api", "worktree", "add", "-b", "task/legacy", workspace / "api", "main")
+        self.wt("create", "legacy", "api")
+        self.assert_worktree("legacy", "api", branch="task/legacy")
+        self.wt("add", "legacy", "auth")
+        self.assert_worktree("legacy", "auth")
+        self.assertIn("task/legacy", self.wt("status", "legacy").stdout)
+        self.wt("remove", "legacy")
+        self.git(self.repos / "api", "show-ref", "--verify", "refs/heads/task/legacy")
+
+    def test_existing_default_branch_conflict_does_not_change_original(self):
+        result = self.wt("create", "main", "api", ok=False)
+        self.assertIn("Branch main is checked out at", result.stderr)
+        self.assertFalse((self.tasks / "main/api").exists())
+        self.assertEqual(self.git(self.repos / "api", "branch", "--show-current"), "main")
 
     def test_existing_marker_is_compatible_and_marker_symlinks_are_rejected(self):
         workspace = self.tasks / "legacy"
@@ -333,7 +352,7 @@ class WorktreeTests(unittest.TestCase):
         self.assert_worktree("via-mise", "auth")
         listing = self.run_command(["mise", "run", "wt:list"]).stdout
         self.assertIn("via-mise", listing)
-        self.assertIn("task/via-mise", self.run_command(["mise", "run", "wt:status", "via-mise"]).stdout)
+        self.assertIn("## via-mise", self.run_command(["mise", "run", "wt:status", "via-mise"]).stdout)
         self.run_command(["mise", "run", "wt:remove", "via-mise"])
         self.assertFalse((self.tasks / "via-mise").exists())
 
