@@ -44,6 +44,66 @@ setup `dlx-server` is one repository; its individual service directories are not
 separate repositories. Nested clones and submodules are not discovered recursively.
 Quote repository names containing spaces when supplying them as arguments.
 
+## Check out an existing remote branch
+
+Use `wt:checkout` for reviewing existing work instead of starting from the default
+branch with `wt:create`:
+
+```bash
+mise run wt:checkout <branch> [repos...] [--remote <name>]
+
+# Numbered repository picker, just like wt:create
+mise run wt:checkout feature/fix-login
+
+# Or select repositories explicitly (no prompts)
+mise run wt:checkout feature/fix-login dlx-server dlx-ui
+cd ~/Development/tasks/feature-fix-login/dlx-server
+
+# Fetch from a different configured remote
+mise run wt:checkout feature/fix-login dlx-server --remote upstream
+
+mise run wt:status feature-fix-login
+mise run wt:remove feature-fix-login
+```
+
+The command fetches the same named branch in each selected repository from
+`origin` by default. **Only the workspace folder replaces `/` with `-`**:
+`feature/fix-login` stays the Git branch name, while its workspace folder is
+`feature-fix-login`. There is no separate task-name argument or `--task` flag.
+Supply the branch name without `origin/`; PR URLs, hashes, tags, and refspecs are
+not inputs. The derived folder must satisfy the task-name rules below.
+
+- Omit repositories for a numbered picker, or supply one or more names.
+  Missing branches are reported per repository, never replaced with default
+  branches. Successful worktrees are kept even if another repository fails;
+  the command exits nonzero if any repository fails.
+- Can add repositories to an existing managed workspace. Existing members on
+  the requested branch are skipped without fetching, resetting, or switching.
+  If the workspace contains a different branch (including a slash-to-hyphen
+  naming collision), checkout refuses to reuse it.
+- Refuses an existing local branch outside the destination worktree, reporting
+  its path if checked out elsewhere. It never resets that branch or overwrites
+  conflicting destinations.
+- Fetches only the requested branch, without fetching tags or submodules or
+  updating existing local/remote-tracking branches. It updates Git's `FETCH_HEAD`;
+  do not run concurrent fetches in the same repository during this operation.
+- Creates no upstream tracking configuration. The original checkout stays
+  untouched.
+- A failed fetch creates no worktree or local branch for that repository, and
+  never falls back to a stale ref. If every fetch fails, no workspace is created.
+  For partial failures, resolve the errors and rerun `wt:checkout` with the same
+  branch and failed repositories (or use the picker again).
+- If worktree creation fails after fetching, inspect any retained workspace and
+  branch before retrying. Empty managed workspaces can be removed with
+  `wt:remove`; branches are always preserved. After removing a workspace, the
+  preserved local branches will cause a fresh checkout to refuse rather than
+  silently reset them.
+
+Use the flattened folder name with `wt:status` and `wt:remove`.
+`wt:add` still uses the folder name as its local branch and starts from defaults
+when that branch does not exist; use `wt:checkout` to add repositories on the same
+existing remote branch, especially when the branch name contains slashes.
+
 ## Configuration
 
 | Environment variable | Default |
@@ -79,24 +139,25 @@ Example: `AD1-1234-add-sso`.
 
 ## Branch behavior
 
-- Each new worktree uses the workspace folder name exactly as its branch name:
+- For `wt:create` and `wt:add`, each new worktree uses the workspace folder name exactly as its branch name:
   `wt:create add-sso` uses branch `add-sso`, with no prefix. Existing branches
   with that exact name are reused.
 - Existing worktrees on older `task/<name>` branches are not renamed or switched.
   Additional repositories added to those workspaces use the new unprefixed name.
-- Existing workspace members are skipped, never reset or switched. If you have
+- Create/add skip existing workspace members, never resetting or switching them. If you have
   manually changed a member's branch, `wt:status` shows its actual branch.
 - A branch checked out elsewhere is reported with that worktree's path; the
   command does not force a second checkout. Two source directory names pointing
   to the same underlying repository are subject to this same Git restriction.
-- New branches use a remote's recorded default (`refs/remotes/origin/HEAD`, then
+- New branches created by `wt:create`/`wt:add` use a remote's recorded default (`refs/remotes/origin/HEAD`, then
   other remotes). If a remote has no recorded HEAD, the script queries it with
   `git ls-remote --symref`, preferring its local remote-tracking branch and then
   its local branch. If remotes are unavailable or absent, local `main`, then
   `master`, are the fallback. An identified default without a local commit is
   an error, not permission to use a different branch.
-- No automatic fetch occurs. Remote queries may require network access; Git
-  credential prompting is disabled for those queries. SSH authentication remains
+- `wt:create` and `wt:add` do not fetch; `wt:checkout` explicitly fetches its source
+  branch. Remote queries and fetches may require network access; Git credential
+  prompting is disabled. SSH authentication remains
   subject to your SSH configuration. For offline use, ensure the remote HEAD
   and its target commit are already available locally. To configure these
   deliberately, outside this workflow, use e.g. `git fetch origin` and
@@ -156,7 +217,7 @@ All manager files live together:
 `pathlib`, and native Git commands with `subprocess` (no shell interpolation).
 The existing `.wt-workspace` marker format is unchanged, so workspaces created
 by the earlier Bash implementation remain usable without migration.
-`tasks.toml` defines the five `wt:*` commands and delegates to that script.
+`tasks.toml` defines the six `wt:*` commands and delegates to that script.
 There are no separate launcher scripts under Mise's task directory.
 
 The global `~/.config/mise/config.toml` includes the definitions:
@@ -192,3 +253,8 @@ Coverage includes menus and explicit
 selection, overlapping tasks, adding, listing, status, main/master/custom defaults,
 remote-default discovery, branch reuse/conflicts, `.git` files, paths with spaces,
 partial failures, invalid inputs, destination protection, and safe removal.
+Checkout coverage includes exact remote branch commits, custom remotes, nested
+branch names, original checkout/ref preservation, conflicts, stale-fetch failure,
+existing workspace additions, picker/multiple-repository selection, slash-to-hyphen
+folder mapping and collisions, partial-failure retries, recovery, and real Mise
+argument forwarding and interactive input.

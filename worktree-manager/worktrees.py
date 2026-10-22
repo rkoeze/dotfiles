@@ -167,6 +167,64 @@ def validate_roots(repo_root, tasks_root):
         raise WorkspaceError("Tasks root must be outside existing Git repositories.")
 
 
+def ensure_workspace(workspace):
+    if not exists(workspace):
+        workspace.parent.mkdir(parents=True, exist_ok=True)
+        workspace.mkdir()
+        with (workspace / MARKER).open("x", encoding="utf-8") as stream:
+            stream.write(VERSION + "\n")
+
+
+def checkout(workspace, repo_root, name, branch, remote):
+    """Fetch one remote branch without updating existing local branches or worktrees."""
+    repo, path = repo_root / name, workspace / name
+    if exists(path):
+        if member(path) and registered(repo, path) and git(path, "branch", "--show-current").stdout.strip() == branch:
+            print(f"= {name} (already included; not fetched or switched)")
+            return
+        raise WorkspaceError(f"Destination already exists: {path} (will not overwrite it).")
+    local_ref = f"refs/heads/{branch}"
+    location = next((r["worktree"] for r in worktrees(repo) if r.get("branch") == local_ref), None)
+    if location:
+        raise WorkspaceError(f"Branch {branch} is checked out at {location}")
+    if git(repo, "show-ref", "--verify", "--quiet", local_ref, check=False).returncode == 0:
+        raise WorkspaceError(f"Local branch {branch} already exists (will not reset it).")
+    if remote not in git(repo, "remote").stdout.splitlines():
+        raise WorkspaceError(f"Unknown remote: {remote} (supply a configured remote name).")
+    source = f"refs/heads/{branch}"
+
+    # Empty refmap prevents configured fetch mappings from updating other refs.
+    # Fetch only this branch, not tags or submodules; never fall back to a stale ref.
+    git(repo, "fetch", "--no-tags", "--no-recurse-submodules", "--refmap=", "--", remote, source)
+    commit = git(repo, "rev-parse", "--verify", "FETCH_HEAD^{commit}").stdout.strip()
+    ensure_workspace(workspace)
+    # -b (not -B) also protects a branch created after the preflight check.
+    # No upstream is set: review branches must not accidentally push to the PR branch.
+    git(repo, "worktree", "add", "--no-track", "-b", branch, "--", path, commit)
+    print(f"OK {name} ({branch} from {remote}/{branch} at {commit[:12]})")
+
+
+def checkout_members(workspace, repo_root, selected, branch, remote):
+    # Different branch names may flatten to the same folder (feature/fix vs feature-fix).
+    # Do not mix them across repositories in an existing workspace.
+    if exists(workspace):
+        for path in entries(workspace):
+            if member(path) and git(path, "branch", "--show-current").stdout.strip() != branch:
+                raise WorkspaceError(f"Workspace {workspace} contains a different branch at {path}; will not reuse it.")
+    failures = 0
+    for name in selected:
+        try:
+            checkout(workspace, repo_root, name, branch, remote)
+        except (WorkspaceError, OSError) as error:
+            print(f"FAIL {name}: {error}", file=sys.stderr)
+            failures += 1
+    print(f"\nWorkspace: {workspace}" if exists(workspace) else f"\nWorkspace not created: {workspace}")
+    if failures:
+        print(f"{failures} repositories failed; successful worktrees and branches were kept. "
+              "Resolve the errors and retry wt:checkout with the same branch and failed repositories.", file=sys.stderr)
+    return int(bool(failures))
+
+
 def create_members(workspace, repo_root, selected, branch):
     failures = 0
     for name in selected:
@@ -287,6 +345,10 @@ def parser():
         command.add_argument("task")
         if name in ("create", "add"):
             command.add_argument("repos", nargs="*", help="repository names; omit for a numbered menu")
+    command = commands.add_parser("checkout", help="fetch an existing remote branch into a new task worktree")
+    command.add_argument("branch", help="remote branch name (without origin/); folder replaces / with -")
+    command.add_argument("repos", nargs="*", help="repository names; omit for a numbered menu")
+    command.add_argument("--remote", default="origin", help="configured remote name (default: origin)")
     commands.add_parser("list")
     return cli
 
@@ -301,22 +363,24 @@ def main(argv=None):
         repo_root, tasks_root = repo_root.resolve(), tasks_root.resolve()
         if args.command == "list":
             return list_workspaces(tasks_root)
+        if args.command == "checkout":
+            if args.branch.startswith("-") or git(repo_root, "check-ref-format", f"refs/heads/{args.branch}", check=False).returncode:
+                raise WorkspaceError(f"Invalid remote branch: {args.branch} (supply a branch name, not a refspec).")
+            args.task = args.branch.replace("/", "-")
         if (not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", args.task)
                 or git(repo_root if repo_root.is_dir() else Path.cwd(), "check-ref-format",
                        "--branch", args.task, check=False).returncode):
             raise WorkspaceError(f"Unsafe task name: {args.task} (use a single letter/digit/dot/underscore/hyphen name valid as a Git branch).")
         workspace = tasks_root / args.task
-        if args.command != "create" or exists(workspace):
+        if args.command not in ("create", "checkout") or exists(workspace):
             if not managed(workspace):
                 raise WorkspaceError(f"Not a managed task workspace: {workspace} (will not overwrite or remove it).")
-        if args.command in ("create", "add"):
+        if args.command in ("create", "add", "checkout"):
             validate_roots(repo_root, tasks_root)
             selected = select_repos(discover(repo_root), args.repos)
-            if not exists(workspace):
-                tasks_root.mkdir(parents=True, exist_ok=True)
-                workspace.mkdir()
-                with (workspace / MARKER).open("x", encoding="utf-8") as stream:
-                    stream.write(VERSION + "\n")
+            if args.command == "checkout":
+                return checkout_members(workspace, repo_root, selected, args.branch, args.remote)
+            ensure_workspace(workspace)
             return create_members(workspace, repo_root, selected, args.task)
         if args.command == "status":
             return status(workspace)

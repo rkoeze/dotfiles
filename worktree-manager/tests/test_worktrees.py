@@ -95,6 +95,196 @@ class WorktreeTests(unittest.TestCase):
         self.assertEqual(self.git(api, "branch", "--show-current"), "original")
         self.assertEqual(self.git(api, "status", "--porcelain"), before)
 
+    def checkout_remote(self, name="api", remote="origin"):
+        upstream = self.init_repo("upstream", "main")
+        self.git(upstream, "switch", "-qc", "feature/pr-fix")
+        (upstream / "tracked").write_text("PR changes\n")
+        self.git(upstream, "commit", "-qam", "PR commit")
+        self.git(upstream, "tag", "pr-tag")
+        commit = self.git(upstream, "rev-parse", "HEAD")
+        self.git(upstream, "switch", "-q", "main")
+        self.git(self.repos / name, "remote", "add", remote, upstream)
+        return upstream, commit
+
+    def test_checkout_fetches_exact_branch_and_preserves_original_checkout_and_refs(self):
+        api = self.repos / "api"
+        _, commit = self.checkout_remote()
+        initial = self.git(api, "rev-parse", "HEAD")
+        self.git(api, "update-ref", "refs/remotes/origin/feature/pr-fix", initial)
+        (api / "tracked").write_text("dirty original\n")
+        (api / "untracked").write_text("valuable original data\n")
+        before = self.git(api, "status", "--porcelain")
+        result = self.wt("checkout", "feature/pr-fix", "api")
+        path = self.assert_worktree("feature-pr-fix", "api", branch="feature/pr-fix")
+        self.assertIn("origin/feature/pr-fix", result.stdout)
+        self.assertEqual(self.git(path, "rev-parse", "HEAD"), commit)
+        self.assertEqual((path / "tracked").read_text(), "PR changes\n")
+        self.assertEqual(self.git(path, "status", "--porcelain"), "")
+        self.assertEqual(self.git(api, "branch", "--show-current"), "main")
+        self.assertEqual(self.git(api, "rev-parse", "HEAD"), initial)
+        self.assertEqual(self.git(api, "status", "--porcelain"), before)
+        self.assertEqual(self.git(api, "rev-parse", "refs/remotes/origin/feature/pr-fix"), initial)
+        self.assertEqual(self.git(api, "tag", "--list"), "")
+        self.assertEqual(self.git(api, "config", "--get-regexp", "^remote.origin.fetch$"),
+                         "remote.origin.fetch +refs/heads/*:refs/remotes/origin/*")
+        self.run_command(["git", "-C", path, "rev-parse", "--verify", "@{upstream}"], ok=False)
+        self.assertIn("feature-pr-fix", self.wt("list").stdout)
+        self.assertIn("## feature/pr-fix", self.wt("status", "feature-pr-fix").stdout)
+        self.wt("remove", "feature-pr-fix")
+        self.assertEqual(self.git(api, "rev-parse", "feature/pr-fix"), commit)
+        # Re-running after removal must not reset the preserved branch.
+        self.wt("checkout", "feature/pr-fix", "api", ok=False)
+        self.assertFalse((self.tasks / "feature-pr-fix").exists())
+
+    def test_checkout_custom_remote_and_existing_workspace(self):
+        upstream, commit = self.checkout_remote(name="front end", remote="upstream")
+        self.git(self.repos / "auth", "remote", "add", "upstream", upstream)
+        self.wt("checkout", "feature/pr-fix", "auth", "--remote", "upstream")
+        self.wt("checkout", "feature/pr-fix", "front end", "--remote", "upstream")
+        path = self.assert_worktree("feature-pr-fix", "front end", branch="feature/pr-fix")
+        self.assertEqual(self.git(path, "rev-parse", "HEAD"), commit)
+        self.assert_worktree("feature-pr-fix", "auth", branch="feature/pr-fix")
+
+    def test_checkout_picker_multiple_repos_and_idempotent_retry(self):
+        upstream, commit = self.checkout_remote()
+        self.git(self.repos / "auth", "remote", "add", "origin", upstream)
+        result = self.wt("checkout", "feature/pr-fix", input="1 2 2\n")
+        self.assertIn("1) api", result.stdout)
+        self.assertIn("2) auth", result.stdout)
+        self.assertIn("3) front end", result.stdout)
+        for repo in ("api", "auth"):
+            path = self.assert_worktree("feature-pr-fix", repo, branch="feature/pr-fix")
+            self.assertEqual(self.git(path, "rev-parse", "HEAD"), commit)
+        self.assertFalse((self.tasks / "feature-pr-fix/front end").exists())
+        # Existing members are not fetched, reset, or switched, even with new remote commits.
+        self.git(upstream, "switch", "-q", "feature/pr-fix")
+        (upstream / "tracked").write_text("new remote commit\n")
+        self.git(upstream, "commit", "-qam", "update PR")
+        result = self.wt("checkout", "feature/pr-fix", "api", "auth")
+        self.assertIn("already included", result.stdout)
+        self.assertEqual(self.git(self.tasks / "feature-pr-fix/api", "rev-parse", "HEAD"), commit)
+
+    def test_checkout_partial_failure_and_retry_without_default_fallback(self):
+        upstream, commit = self.checkout_remote()
+        auth = self.repos / "auth"
+        self.git(auth, "remote", "add", "origin", auth)  # No PR branch on this remote.
+        result = self.wt("checkout", "feature/pr-fix", "auth", "api", ok=False)
+        self.assertIn("FAIL auth", result.stderr)
+        self.assertIn("successful worktrees and branches were kept", result.stderr)
+        self.assert_worktree("feature-pr-fix", "api", branch="feature/pr-fix")
+        self.assertFalse((self.tasks / "feature-pr-fix/auth").exists())
+        self.run_command(["git", "-C", auth, "show-ref", "--verify",
+                          "refs/heads/feature/pr-fix"], ok=False)
+        self.git(auth, "remote", "set-url", "origin", upstream)
+        self.wt("checkout", "feature/pr-fix", "api", "auth")
+        path = self.assert_worktree("feature-pr-fix", "auth", branch="feature/pr-fix")
+        self.assertEqual(self.git(path, "rev-parse", "HEAD"), commit)
+
+    def test_checkout_fetch_failure_does_not_use_stale_refs_or_create_workspace(self):
+        api = self.repos / "api"
+        upstream, _ = self.checkout_remote()
+        self.git(api, "fetch", "origin", "feature/pr-fix")
+        self.git(upstream, "branch", "-D", "feature/pr-fix")
+        self.wt("checkout", "feature/pr-fix", "api", ok=False)
+        self.assertFalse(self.tasks.exists())
+        self.run_command(["git", "-C", api, "show-ref", "--verify",
+                          "refs/heads/feature/pr-fix"], ok=False)
+
+    def test_checkout_refuses_existing_branches_without_fetching_or_resetting(self):
+        api = self.repos / "api"
+        self.git(api, "branch", "feature/pr-fix")
+        initial = self.git(api, "rev-parse", "feature/pr-fix")
+        result = self.wt("checkout", "feature/pr-fix", "api", ok=False)
+        self.assertIn("already exists", result.stderr)
+        result = self.wt("checkout", "main", "api", ok=False)
+        self.assertIn(f"checked out at {api}", result.stderr)
+        self.assertFalse(self.tasks.exists())
+        self.assertEqual(self.git(api, "rev-parse", "feature/pr-fix"), initial)
+        self.assertEqual(self.git(api, "branch", "--show-current"), "main")
+
+    def test_checkout_refuses_existing_destinations_and_unmanaged_workspaces(self):
+        self.wt("create", "review", "auth")
+        destination = self.tasks / "review/api"
+        for kind in ("file", "directory", "symlink"):
+            with self.subTest(kind=kind):
+                if kind == "file":
+                    destination.write_text("keep\n")
+                elif kind == "directory":
+                    destination.mkdir()
+                else:
+                    destination.symlink_to(self.repos / "api", target_is_directory=True)
+                result = self.wt("checkout", "review", "api", ok=False)
+                self.assertIn("Destination already exists", result.stderr)
+                self.assertTrue(manager.exists(destination))
+                if kind == "directory":
+                    destination.rmdir()
+                else:
+                    destination.unlink()
+        unrelated = self.tasks / "unrelated"
+        unrelated.mkdir()
+        self.wt("checkout", "unrelated", "api", ok=False)
+        self.assertEqual(list(unrelated.iterdir()), [])
+        (self.tasks / "alias").symlink_to(self.tasks / "review", target_is_directory=True)
+        self.wt("checkout", "alias", "api", ok=False)
+        self.assert_worktree("review", "auth")
+        self.git(self.tasks / "review/auth", "switch", "-qc", "manually-changed")
+        self.wt("checkout", "review", "auth", ok=False)
+        self.assert_worktree("review", "auth", branch="manually-changed")
+
+    def test_checkout_normalized_folder_collision_does_not_mix_branches(self):
+        upstream, _ = self.checkout_remote()
+        self.git(upstream, "branch", "feature-pr-fix", "feature/pr-fix")
+        self.git(self.repos / "auth", "remote", "add", "origin", upstream)
+        self.wt("checkout", "feature/pr-fix", "api")
+        result = self.wt("checkout", "feature-pr-fix", "auth", ok=False)
+        self.assertIn("different branch", result.stderr)
+        self.assertFalse((self.tasks / "feature-pr-fix/auth").exists())
+        self.assert_worktree("feature-pr-fix", "api", branch="feature/pr-fix")
+
+    def test_checkout_invalid_inputs_have_no_side_effects(self):
+        self.checkout_remote()
+        for branch in ("missing", "feature/pr-fix:other", "feature/*", "a..b", "@{-1}",
+                       "has space", "-option", "feature//fix", "../escape", "/absolute",
+                       "a.lock", "a.", "HEAD"):
+            with self.subTest(branch=branch):
+                self.wt("checkout", "--", branch, "api", ok=False)
+                self.assertFalse(self.tasks.exists())
+        for remote in ("missing", "--upload-pack=bad", str(self.repos / "upstream")):
+            with self.subTest(remote=remote):
+                self.wt("checkout", "feature/pr-fix", "api", f"--remote={remote}", ok=False)
+        self.wt("checkout", "feature/pr-fix", "missing", ok=False)
+        self.wt("checkout", ok=False)
+        for selection in ("", "\n", "0\n", "999999\n", "x\n"):
+            self.wt("checkout", "feature/pr-fix", input=selection, ok=False)
+        for variable, value in (("WT_REPOS_ROOT", "relative"), ("WT_TASKS_ROOT", "relative"),
+                                ("WT_TASKS_ROOT", str(self.repos / "api/tasks"))):
+            self.wt("checkout", "feature/pr-fix", "api",
+                    env=dict(self.env, **{variable: value}), ok=False)
+        self.assertFalse(self.tasks.exists())
+        self.wt("checkout", "--help")
+
+    def test_checkout_native_failure_keeps_recoverable_workspace_and_existing_refs(self):
+        api = self.repos / "api"
+        self.checkout_remote()
+        self.git(api, "branch", "feature/pr-fix/child")
+        self.wt("checkout", "feature/pr-fix", "api", ok=False)
+        self.assertFalse((self.tasks / "feature-pr-fix/api").exists())
+        self.assertTrue(manager.managed(self.tasks / "feature-pr-fix"))
+        self.git(api, "show-ref", "--verify", "refs/heads/feature/pr-fix/child")
+        self.wt("remove", "feature-pr-fix")
+
+    @unittest.skipUnless(shutil.which("mise"), "Mise is not installed")
+    def test_mise_checkout_argument_forwarding_and_picker(self):
+        upstream, commit = self.checkout_remote(name="front end", remote="upstream")
+        self.git(self.repos / "api", "remote", "add", "upstream", upstream)
+        self.run_command(["mise", "run", "wt:checkout", "feature/pr-fix",
+                          "front end", "--remote", "upstream"])
+        path = self.assert_worktree("feature-pr-fix", "front end", branch="feature/pr-fix")
+        self.assertEqual(self.git(path, "rev-parse", "HEAD"), commit)
+        self.run_command(["mise", "run", "wt:checkout", "feature/pr-fix",
+                          "--remote", "upstream"], input="1 3\n")
+        self.assert_worktree("feature-pr-fix", "api", branch="feature/pr-fix")
+
     def test_interactive_selection_and_add(self):
         result = self.wt("create", "menu", input="1 3 3\n")
         self.assertIn("1) api", result.stdout)
