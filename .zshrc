@@ -12,6 +12,15 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+tmn() {
+  local default_name="${PWD:t}"
+  tmux new-session -s "${1:-${default_name//[.:]/_}}" "${@:2}"
+}
+tma() {
+  local default_name="${PWD:t}"
+  tmux attach-session -t "=${1:-${default_name//[.:]/_}}" "${@:2}"
+}
+
 # git aliases
 alias gcm='git commit --verbose'
 alias gss='git status'
