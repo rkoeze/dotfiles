@@ -23,3 +23,8 @@ raw = true
 raw_args = true
 quiet = true
 run = "exec pi"
+
+[tasks."pi:update"]
+description = "Update Pi to the latest version"
+raw = true
+run = "mise upgrade --global 'npm:@earendil-works/pi-coding-agent'"
