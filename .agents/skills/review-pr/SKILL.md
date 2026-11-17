@@ -128,14 +128,31 @@ fixed.
 
 ## Review standards
 
+- **Citations MUST reference the actual source file and its line number in the
+  working tree — never the line number inside a diff, patch, or any temporary
+  file you saved while reviewing.** A reference like `server.diff:1220` or a
+  hunk offset is WRONG and useless: the reader cannot open it, and diff line
+  numbers do not correspond to file line numbers. The correct form is
+  `src/services/ApprovalService.java:113` — a path that
+  exists on disk and a line number you confirmed by opening that file. If you
+  built context by saving the diff to a scratch file or reading `git diff`
+  output, do **not** cite positions in that output; open the real file (e.g.
+  with Read or `grep -n`) and cite the line there. Before submitting a subagent
+  report, re-scan every citation and reject any that names a
+  `.diff`/`.patch`/scratch file or whose number you only know from diff context —
+  resolve it to a real `repo/path/File.ext:line` first. The main reviewer preserves
+  those verified citations in its summary.
 - Cite concrete evidence with real `file_path:line_number` references whenever
   possible; if you genuinely cannot resolve a line, name the file and symbol
   rather than guessing a number.
 - Prefer source-backed findings. If a concern is mostly speculative, place it
   under risks instead of blockers.
+- Prefer a small number of defensible findings over a long list of weak
   suggestions.
 - Separate design feedback from merge blockers.
+- Avoid repeating what the diff already makes obvious.
 - Do not invent feedback to fill a category. If a bucket is empty, say `None.`
+- If the diff is too large to review exhaustively, state the blind spots
   explicitly.
 - Order items by severity within each category.
 
