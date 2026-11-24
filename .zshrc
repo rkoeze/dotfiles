@@ -20,6 +20,7 @@ tma() {
   local default_name="${PWD:t}"
   tmux attach-session -t "=${1:-${default_name//[.:]/_}}" "${@:2}"
 }
+alias tmls='tmux ls'
 
 # git aliases
 alias gcm='git commit --verbose'
